@@ -4,7 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import SalesForm from "./pages/SalesForm";
 // import AdminDashboard from "./pages/AdminDashboard";
 // import ServicePage from "./pages/ServicePage";
-// import AccountsPage from "./pages/AccountPage";
+import AccountsPage from "./pages/AccountPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -41,7 +41,7 @@ function App() {
             path="/accounts"
             element={
               <ProtectedRoute allowedRoles={["accounts"]}>
-                {/* <AccountsPage /> */}
+                <AccountsPage />
               </ProtectedRoute>
             }
           />
