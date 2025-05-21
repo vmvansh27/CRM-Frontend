@@ -197,7 +197,7 @@ export default function SalesForm() {
         referenceSource: '',
         billingDate: '',
         services: [],
-        totalCost: '',
+        yearlyCost: '',
         billingInstructions: '',
         serviceCommitments: '',
         demoStatus: '',
@@ -307,7 +307,7 @@ export default function SalesForm() {
                 ))}
             </FormGroup>
 
-            <TextField fullWidth margin="normal" label="Total Yearly Cost" name="totalCost" value={formData.totalCost} onChange={handleChange} required />
+            <TextField fullWidth margin="normal" label="Total Yearly Cost" name="yearlyCost" value={formData.yearlCost} onChange={handleChange} required />
 
             <FormControl fullWidth margin="normal">
                 <InputLabel>Billing Instructions</InputLabel>
