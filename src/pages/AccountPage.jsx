@@ -1,6 +1,3 @@
-
-
-
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 // import {
@@ -26,42 +23,45 @@
 //     const [toDate, setToDate] = useState("");
 
 //     useEffect(() => {
-//         const fetchBillingData = async () => {
-//             try {
-//                 const response = await axios.get("/api/billing");
-
-//                 // Transform into a flat array first
-//                 const flattened = [];
-
-//                 response.data?.forEach((billing) => {
-//                     billing.services?.forEach((service, index) => {
-//                         flattened.push({
-//                             id: `${billing._id}-${index}`,
-//                             billingId: billing._id,
-//                             companyName: billing.companyName || "Unknown",
-//                             customerName: billing.customerName || "Unknown",
-//                             email: billing.email || "Unknown",
-//                             phone: billing.mobile || "Unknown",
-//                             filledBy: billing.filledBy || "Unknown",
-//                             serviceName: service.serviceName,
-//                             billingInstruction: service.billingInstruction,
-//                             costPrice: service.costPrice,
-//                             sellingPrice: service.sellingPrice,
-//                             cost: service.cost,
-//                             billingDate: new Date(service.nextBillingDate),
-//                             status: service.status,
-//                         });
-//                     });
-//                 });
-
-//                 setBillingData(flattened);
-//                 setFilteredData(flattened);
-//             } catch (err) {
-//                 console.error("Failed to fetch billing data", err);
-//             }
-//         };
 //         fetchBillingData();
 //     }, []);
+
+//     const fetchBillingData = async () => {
+//         try {
+//             const response = await axios.get("/api/billing");
+
+//             // Transform into a flat array first
+//             const flattened = [];
+
+//             response.data?.forEach((billing) => {
+//                 billing.services?.forEach((service, index) => {
+//                     flattened.push({
+//                         id: `${billing._id}-${index}`,
+//                         billingId: billing._id,
+//                         serviceIndex: index,
+//                         companyName: billing.companyName || "Unknown",
+//                         customerName: billing.customerName || "Unknown",
+//                         email: billing.email || "Unknown",
+//                         phone: billing.mobile || "Unknown",
+//                         filledBy: billing.filledBy || "Unknown",
+//                         serviceName: service.serviceName,
+//                         billingInstruction: service.billingInstruction,
+//                         costPrice: service.costPrice,
+//                         sellingPrice: service.sellingPrice,
+//                         cost: service.cost,
+//                         installment: service.installment,
+//                         billingDate: new Date(service.nextBillingDate),
+//                         status: service.status,
+//                     });
+//                 });
+//             });
+
+//             setBillingData(flattened);
+//             setFilteredData(flattened);
+//         } catch (err) {
+//             console.error("Failed to fetch billing data", err);
+//         }
+//     };
 
 //     const handleFilter = () => {
 //         if (!fromDate || !toDate) return;
@@ -76,6 +76,18 @@
 //         });
 
 //         setFilteredData(filtered);
+//     };
+
+//     const handleClearClick = async (billingId, serviceIndex) => {
+//         try {
+//             await axios.patch(`/api/billing/${billingId}/service/${serviceIndex}`);
+
+//             // After clearing, refresh the data from API
+//             await fetchBillingData();
+
+//         } catch (err) {
+//             console.error("Failed to clear service", err);
+//         }
 //     };
 
 //     const formatDate = (date) =>
@@ -145,12 +157,20 @@
 //                                 <TableCell>₹{(row.sellingPrice || 0) - (row.costPrice || 0)}</TableCell>
 //                                 <TableCell>{formatDate(row.billingDate)}</TableCell>
 //                                 <TableCell>
-//                                     <Button
-//                                         variant="contained"
-//                                         style={{ backgroundColor: row.status === "Paid" ? "green" : "red", color: "white", pointerEvents: "none" }}
-//                                     >
-//                                         {row.status === "Paid" ? "Cleared" : row.status}
-//                                     </Button>
+//                                     {row.status === "Cleared" ? (
+//                                         <Button variant="contained" color="success" disabled>
+//                                             Cleared
+//                                         </Button>
+//                                     ) : (
+//                                         <Button
+//                                             variant="contained"
+//                                             color="error"
+//                                             onClick={() => handleClearClick(row.billingId, row.serviceIndex)}
+//                                         >
+//                                             Pending
+//                                         </Button>
+//                                     )}
+
 //                                 </TableCell>
 //                             </TableRow>)
 //                         )}
@@ -163,6 +183,7 @@
 // };
 
 // export default AccountPage;
+
 
 
 import React, { useEffect, useState } from "react";
@@ -190,43 +211,46 @@ const AccountPage = () => {
     const [toDate, setToDate] = useState("");
 
     useEffect(() => {
-        const fetchBillingData = async () => {
-            try {
-                const response = await axios.get("/api/billing");
-
-                // Transform into a flat array first
-                const flattened = [];
-
-                response.data?.forEach((billing) => {
-                    billing.services?.forEach((service, index) => {
-                        flattened.push({
-                            id: `${billing._id}-${index}`,
-                            billingId: billing._id,
-                            serviceIndex: index,
-                            companyName: billing.companyName || "Unknown",
-                            customerName: billing.customerName || "Unknown",
-                            email: billing.email || "Unknown",
-                            phone: billing.mobile || "Unknown",
-                            filledBy: billing.filledBy || "Unknown",
-                            serviceName: service.serviceName,
-                            billingInstruction: service.billingInstruction,
-                            costPrice: service.costPrice,
-                            sellingPrice: service.sellingPrice,
-                            cost: service.cost,
-                            billingDate: new Date(service.nextBillingDate),
-                            status: service.status,
-                        });
-                    });
-                });
-
-                setBillingData(flattened);
-                setFilteredData(flattened);
-            } catch (err) {
-                console.error("Failed to fetch billing data", err);
-            }
-        };
         fetchBillingData();
     }, []);
+
+    const fetchBillingData = async () => {
+        try {
+            const response = await axios.get("/api/billing");
+
+            // Transform into a flat array first
+            const flattened = [];
+
+            response.data?.forEach((billing) => {
+                billing.services?.forEach((service, index) => {
+                    flattened.push({
+                        id: `${billing._id}-${index}`,
+                        billingId: billing._id,
+                        serviceIndex: index,
+                        companyName: billing.companyName || "Unknown",
+                        customerName: billing.customerName || "Unknown",
+                        email: billing.email || "Unknown",
+                        phone: billing.mobile || "Unknown",
+                        filledBy: billing.filledBy || "Unknown",
+                        serviceName: service.serviceName,
+                        billingInstruction: service.billingInstruction,
+                        costPrice: service.costPrice,
+                        sellingPrice: service.sellingPrice,
+                        totalCostPrice: service.totalCostPrice,
+                        totalSellingPrice: service.totalSellingPrice,
+                        installment: service.installment,
+                        billingDate: new Date(service.nextBillingDate),
+                        status: service.status,
+                    });
+                });
+            });
+
+            setBillingData(flattened);
+            setFilteredData(flattened);
+        } catch (err) {
+            console.error("Failed to fetch billing data", err);
+        }
+    };
 
     const handleFilter = () => {
         if (!fromDate || !toDate) return;
@@ -245,23 +269,11 @@ const AccountPage = () => {
 
     const handleClearClick = async (billingId, serviceIndex) => {
         try {
-            await axios.patch(`/api/billing/${billingId}/service/${serviceIndex}`, { status: "Cleared" });
+            await axios.patch(`/api/billing/${billingId}/service/${serviceIndex}`);
 
-            // Update state to reflect change
-            setFilteredData((prev) =>
-                prev.map((item) =>
-                    item.billingId === billingId && item.serviceIndex === serviceIndex
-                        ? { ...item, status: "Cleared" }
-                        : item
-                )
-            );
-            setBillingData((prev) =>
-                prev.map((item) =>
-                    item.billingId === billingId && item.serviceIndex === serviceIndex
-                        ? { ...item, status: "Cleared" }
-                        : item
-                )
-            );
+            // After clearing, refresh the data from API
+            await fetchBillingData();
+
         } catch (err) {
             console.error("Failed to clear service", err);
         }
@@ -311,9 +323,10 @@ const AccountPage = () => {
                             <TableCell>Filled By</TableCell>
                             <TableCell>Service</TableCell>
                             <TableCell>Billing Instruction</TableCell>
-                            <TableCell>Cost price</TableCell>
-                            <TableCell>Selling price</TableCell>
-                            <TableCell>Difference</TableCell>
+                            <TableCell>Cost (₹)</TableCell>
+                            <TableCell>Selling (₹)</TableCell>
+                            <TableCell>Difference (₹)</TableCell>
+                            <TableCell>Installment (₹)</TableCell>
                             <TableCell>Billing Date</TableCell>
                             <TableCell>Status</TableCell>
                         </TableRow>
@@ -329,9 +342,10 @@ const AccountPage = () => {
                                 <TableCell>{row.filledBy}</TableCell>
                                 <TableCell>{row.serviceName}</TableCell>
                                 <TableCell>{row.billingInstruction}</TableCell>
-                                <TableCell>₹{row.costPrice || 0}</TableCell>
-                                <TableCell>₹{row.sellingPrice || 0}</TableCell>
-                                <TableCell>₹{(row.sellingPrice || 0) - (row.costPrice || 0)}</TableCell>
+                                <TableCell>₹{row.totalCostPrice || row.costPrice || 0}</TableCell>
+                                <TableCell>₹{row.totalSellingPrice || row.sellingPrice || 0}</TableCell>
+                                <TableCell>₹{(row.totalSellingPrice || row.sellingPrice || 0) - (row.totalCostPrice || row.costPrice || 0)}</TableCell>
+                                <TableCell>₹{row.installment || 0}</TableCell>
                                 <TableCell>{formatDate(row.billingDate)}</TableCell>
                                 <TableCell>
                                     {row.status === "Cleared" ? (

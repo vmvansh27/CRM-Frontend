@@ -54,9 +54,10 @@ export default function SalesForm() {
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
     useEffect(() => {
-        const sum = newServices.reduce((acc, s) => acc + Number(s.cost), 0);
+        const sum = newServices.reduce((acc, s) => acc + Number(s.yearlyCost), 0);
         setTotalNewCost(sum.toFixed(2));
     }, [newServices]);
+
 
     const fetchCompanies = async (input) => {
         try {
@@ -315,7 +316,7 @@ export default function SalesForm() {
                 <Typography variant="h6">Add New Services</Typography>
                 <Grid container spacing={2} mt={1}>
                     <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
+                        <FormControl fullWidth sx={{ minWidth: 200 }}>
                             <InputLabel>Service Name *</InputLabel>
                             <Select name="serviceName" value={newService.serviceName} onChange={handleServiceChange}>
                                 {servicesList.map((s, idx) => (
@@ -354,10 +355,28 @@ export default function SalesForm() {
                             InputProps={{ readOnly: true }}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={3}>
-                        <FormControl fullWidth>
+                    {/* <Grid item xs={12} sm={3}>
+                        <FormControl fullWidth >
                             <InputLabel>Billing Instruction *</InputLabel>
-                            <Select name="billingInstruction" value={newService.billingInstruction} onChange={handleServiceChange}>
+                            <Select name="billingInstruction" value={newService.billingInstruction} onChange={handleServiceChange} size='large'>
+                                <MenuItem value="">Select</MenuItem>
+                                <MenuItem value="Monthly">Monthly</MenuItem>
+                                <MenuItem value="Quarterly">Quarterly</MenuItem>
+                                <MenuItem value="Half-Yearly">Half-Yearly</MenuItem>
+                                <MenuItem value="Yearly">Yearly</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid> */}
+
+                    <Grid item xs={12} sm={3}>
+                        <FormControl fullWidth sx={{ minWidth: 200 }}>
+                            <InputLabel id="billing-label">Billing Instruction *</InputLabel>
+                            <Select
+                                labelId="billing-label"
+                                label="Billing Instruction *"
+                                name="billingInstruction"
+                                value={newService.billingInstruction}
+                                onChange={handleServiceChange}>
                                 <MenuItem value="">Select</MenuItem>
                                 <MenuItem value="Monthly">Monthly</MenuItem>
                                 <MenuItem value="Quarterly">Quarterly</MenuItem>
@@ -366,6 +385,7 @@ export default function SalesForm() {
                             </Select>
                         </FormControl>
                     </Grid>
+
                     <Grid item xs={12} sm={6}>
                         <TextField
                             fullWidth
@@ -420,3 +440,4 @@ export default function SalesForm() {
         </Container>
     )
 }
+
