@@ -17,7 +17,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
-const servicesList = ['VPSServer', 'HostingServices', 'ITSM', 'Antivirus', 'VEEAM', 'DataBackup/DRServices', 'E-Mailing/M365/GoogleWorkspace', 'TallySharedCloud', 'GSuite/M365', 'ManagedServices', 'DLP', 'CPanelServers', 'RentalServices', 'SAASBasedLicences', 'AWS/AzurePublicCloud'];
+const servicesList = ['VPS Server', 'Hosting Services', 'ITSM', 'Antivirus', 'VEEAM', 'DataBackup/DRServices', 'E-Mailing', 'M365', 'Google Workspace', 'Tally Shared Cloud', 'GSuite', 'Managed Services', 'DLP', 'CPanel Servers', 'Rental Services', 'SAAS Based Licences', 'AWS', 'Azure Public Cloud'];
 
 export default function SalesForm() {
     const [companyOptions, setCompanyOptions] = useState([]);
@@ -194,7 +194,7 @@ export default function SalesForm() {
             setSnackbar({ open: true, message: error?.response?.data?.error || 'Submission failed!', severity: 'error' })
         }
     };
-
+    // <Conainer></Conainer>
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
             <Typography variant="h4" gutterBottom>{isExisting ? 'Existing Customer' : 'New Customer'}</Typography>
